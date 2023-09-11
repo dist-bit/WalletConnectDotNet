@@ -77,18 +77,8 @@ public class ProposalData
         this.generatedNamespaces = generatedNamespaces;
     }
 
-    public static ProposalData FromJson(Dictionary<string, dynamic> json)
+    public static ProposalData? FromJson(string json)
     {
-        int id = json["id"];
-        int expiry = json["expiry"];
-        List<Relay> relays = Relay.FromJsonArray(json["relays"]);
-        ConnectionMetadata proposer = ConnectionMetadata.FromJson(json["proposer"]);
-        Dictionary<string, RequiredNamespace> requiredNamespaces = RequiredNamespace.FromJsonDictionary(json["requiredNamespaces"]);
-        Dictionary<string, RequiredNamespace> optionalNamespaces = RequiredNamespace.FromJsonDictionary(json["optionalNamespaces"]);
-        string pairingTopic = json["pairingTopic"];
-        Dictionary<string, string>? sessionProperties = json.ContainsKey("sessionProperties") ? json["sessionProperties"] : null;
-        Dictionary<string, Namespace>? generatedNamespaces = json.ContainsKey("generatedNamespaces") ? Namespace.FromJsonDictionary(json["generatedNamespaces"]) : null;
-
-        return new ProposalData(id, expiry, relays, proposer, requiredNamespaces, optionalNamespaces, pairingTopic, sessionProperties, generatedNamespaces);
+         return JsonConvert.DeserializeObject<ProposalData>(json);
     }
 }
