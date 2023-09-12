@@ -28,19 +28,12 @@ public class Curve
 
 
         ScalarBaseMult(publicKey, privateKey);
-
-        List<byte> byteList = new List<byte>();
-
-
-
         List<long> intList = new List<long>();
         foreach (long value in publicKey)
         {
             byte byteValue = (byte)(value & 0xFF);
             intList.Add(byteValue);
         }
-
-
 
         return new KeyPair(privateKey, intList);
     }

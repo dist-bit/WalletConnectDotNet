@@ -1,9 +1,10 @@
 using System.Text;
-/*
 
-public class CryptoUtils : ICryptoUtils
+
+/*public class CryptoUtils : ICryptoUtils
 {
     private static readonly Random _random = new Random();
+    Curve curve = new Curve();
 
     private const int IV_LENGTH = 12;
     private const int KEY_LENGTH = 32;
@@ -24,9 +25,13 @@ public class CryptoUtils : ICryptoUtils
 
     public CryptoKeyPair GenerateKeyPair()
     {
-        var kp = x.GenerateKeyPair();
+        var kp = curve.GenerateKeyPair();
 
-        return new CryptoKeyPair(BitConverter.ToString(kp.PrivateKey).Replace("-", ""), BitConverter.ToString(kp.PublicKey).Replace("-", ""));
+        var sk = Utils.transformLongListToByteList(kp.PrivateKey).ToArray();
+        var pk = Utils.transformLongListToByteList(kp.PublicKey).ToArray();
+     
+
+        return new CryptoKeyPair(BitConverter.ToString(sk).Replace("-", ""), BitConverter.ToString(pk).Replace("-", ""));
     }
 
     public byte[] RandomBytes(int length)
@@ -43,7 +48,7 @@ public class CryptoUtils : ICryptoUtils
 
     public async Task<string> DeriveSymKey(string privKeyA, string pubKeyB)
     {
-        var sharedKey1 = x.X25519(
+        var sharedKey1 = curve.X25519(
             ByteArrayFromHexString(privKeyA),
             ByteArrayFromHexString(pubKeyB)
         );

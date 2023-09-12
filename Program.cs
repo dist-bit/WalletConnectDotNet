@@ -37,6 +37,16 @@ namespace Example
             Console.WriteLine("=====");
             Utils.PrintList(bobSharedKey);
 
+            var kp = curve.GenerateKeyPair();
+
+            var sk = Utils.transformLongListToByteList(kp.PrivateKey).ToArray();
+            var pk = Utils.transformLongListToByteList(kp.PublicKey).ToArray();
+
+
+            var ckp = new CryptoKeyPair(BitConverter.ToString(sk).Replace("-", ""), BitConverter.ToString(pk).Replace("-", ""));
+            Console.WriteLine(ckp.PrivateKey);
+            Console.WriteLine(ckp.PublicKey);
+
 
 
         }
