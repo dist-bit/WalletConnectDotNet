@@ -1,3 +1,6 @@
+
+
+
 namespace Example
 {
 
@@ -19,10 +22,23 @@ namespace Example
         {
             var windChanged = new Event<Wind>();
             var wind = new Wind("ENE", 27);
+            var curve = new Curve();
 
             windChanged.Subscribe(handler => Console.WriteLine("event"));
 
-    
+
+            var aliceKeyPair = curve.GenerateKeyPair();
+
+            var bobKeyPair = curve.GenerateKeyPair();
+
+            var aliceSharedKey = curve.X25519(aliceKeyPair.PrivateKey, bobKeyPair.PublicKey);
+            var bobSharedKey = curve.X25519(bobKeyPair.PrivateKey, aliceKeyPair.PublicKey);
+            Utils.PrintList(aliceSharedKey);
+            Console.WriteLine("=====");
+            Utils.PrintList(bobSharedKey);
+
+
+
         }
     }
 }

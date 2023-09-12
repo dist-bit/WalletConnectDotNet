@@ -1,4 +1,4 @@
-public interface ISignEngineCommon
+/*public interface ISignEngineCommon
 {
     public abstract Event<SessionConnect> onSessionConnect { get; }
     public abstract Event<SessionDelete> onSessionDelete { get; }
@@ -19,4 +19,4 @@ public interface ISignEngineCommon
     public abstract Dictionary<string, ProposalData> GetPendingSessionProposals();
 
     public abstract IPairingStore pairings { get; }
-}
+} */
