@@ -1,6 +1,9 @@
 
 
 
+using System.Text;
+using System.Security.Cryptography;
+
 namespace Example
 {
 
@@ -15,8 +18,13 @@ namespace Example
             Strength = strength;
         }
     }
+
+
+
     public class Program
     {
+
+
 
         static void Main(string[] args)
         {
@@ -33,21 +41,31 @@ namespace Example
 
             var aliceSharedKey = curve.X25519(aliceKeyPair.PrivateKey, bobKeyPair.PublicKey);
             var bobSharedKey = curve.X25519(bobKeyPair.PrivateKey, aliceKeyPair.PublicKey);
-            Utils.PrintList(aliceSharedKey);
-            Console.WriteLine("=====");
-            Utils.PrintList(bobSharedKey);
 
             var kp = curve.GenerateKeyPair();
-
-            var sk = Utils.transformLongListToByteList(kp.PrivateKey).ToArray();
-            var pk = Utils.transformLongListToByteList(kp.PublicKey).ToArray();
+            var sk = Utils.topByteArray(kp.PrivateKey).ToArray();
+            var pk = Utils.topByteArray(kp.PublicKey).ToArray();
 
 
             var ckp = new CryptoKeyPair(BitConverter.ToString(sk).Replace("-", ""), BitConverter.ToString(pk).Replace("-", ""));
-            Console.WriteLine(ckp.PrivateKey);
-            Console.WriteLine(ckp.PublicKey);
 
 
+            List<long> longList = new List<long>
+        { 227, 70, 61, 68, 18, 147, 159, 110, 87, 203, 109, 121, 108, 148, 142, 93, 165, 181, 21, 7, 15, 131, 181, 119, 183, 215, 165, 146, 159, 135, 230, 83};
+            
+            var ikm = Utils.topByteArray(longList);
+            var salt = new byte[0];
+            var info = new byte[0];
+            var L = 32;
+
+            var hkdf = new Hkdf();
+            var actualPrk = BitConverter.ToString(hkdf.Extract(salt, ikm));
+            var derivee = hkdf.DeriveKey(salt, ikm, info, L);
+            var key = BitConverter.ToString(derivee).Replace("-", "").ToLower();
+
+            Console.WriteLine(key);
+
+            Console.WriteLine(Utils.CalculateSHA256Hash(key));
 
         }
     }

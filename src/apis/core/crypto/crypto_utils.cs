@@ -1,6 +1,5 @@
 using System.Text;
 
-
 /*public class CryptoUtils : ICryptoUtils
 {
     private static readonly Random _random = new Random();
@@ -11,26 +10,11 @@ using System.Text;
 
     private const int TYPE_LENGTH = 1;
 
-    public byte[] ByteArrayFromHexString(string hex)
-    {
-        hex = hex.Replace(" ", "");
-        int numberChars = hex.Length;
-        byte[] bytes = new byte[numberChars / 2];
-        for (int i = 0; i < numberChars; i += 2)
-        {
-            bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-        }
-        return bytes;
-    }
-
     public CryptoKeyPair GenerateKeyPair()
     {
         var kp = curve.GenerateKeyPair();
-
-        var sk = Utils.transformLongListToByteList(kp.PrivateKey).ToArray();
-        var pk = Utils.transformLongListToByteList(kp.PublicKey).ToArray();
-     
-
+        var sk = Utils.topByteArray(kp.PrivateKey);
+        var pk = Utils.topByteArray(kp.PublicKey);
         return new CryptoKeyPair(BitConverter.ToString(sk).Replace("-", ""), BitConverter.ToString(pk).Replace("-", ""));
     }
 
@@ -46,20 +30,19 @@ using System.Text;
         return BitConverter.ToString(RandomBytes(32)).Replace("-", "");
     }
 
-    public async Task<string> DeriveSymKey(string privKeyA, string pubKeyB)
+    public string DeriveSymKey(string privKeyA, string pubKeyB)
     {
-        var sharedKey1 = curve.X25519(
-            ByteArrayFromHexString(privKeyA),
-            ByteArrayFromHexString(pubKeyB)
-        );
+        var a = Utils.ByteArrayFromHexString(privKeyA);
+        var b = Utils.ByteArrayFromHexString(pubKeyB);
+        var sharedKey1 = curve.X25519(Utils.ToLongList(a), Utils.ToLongList(b));
+        var ikm = Utils.topByteArray(sharedKey1);
+        var salt = new byte[0];
+        var info = new byte[0];
 
-        var outBytes = new byte[KEY_LENGTH];
+        Hkdf hkdf = new Hkdf();
+        var derivation = hkdf.DeriveKey(salt, ikm, info, KEY_LENGTH);
 
-        var hkdf = new Hkdf(HkdfParameters.DefaultHmacAlgorithm);
-        hkdf.Init(new KeyParameter(sharedKey1));
-        hkdf.GenerateBytes(outBytes, 0, KEY_LENGTH);
-
-        return BitConverter.ToString(outBytes).Replace("-", "");
+        return BitConverter.ToString(derivation).Replace("-", "").ToLower();
     }
 
     public string HashKey(string key)
@@ -91,18 +74,18 @@ using System.Text;
             throw new WalletConnectError(-1, "Missing sender public key for type 1 envelope");
         }
 
-        var usedIV = iv != null ? ByteArrayFromHexString(iv) : RandomBytes(IV_LENGTH);
+        var usedIV = iv != null ? Utils.ByteArrayFromHexString(iv) : RandomBytes(IV_LENGTH);
 
         var chacha = new ChaCha20Poly1305Aead();
-        var b = chacha.Encrypt(Encoding.UTF8.GetBytes(message), ByteArrayFromHexString(symKey), usedIV);
+        var b = chacha.Encrypt(Encoding.UTF8.GetBytes(message), Utils.ByteArrayFromHexString(symKey), usedIV);
 
-        return Serialize(decodedType, b, usedIV, senderPublicKey != null ? ByteArrayFromHexString(senderPublicKey) : null);
+        return Serialize(decodedType, b, usedIV, senderPublicKey != null ? Utils.ByteArrayFromHexString(senderPublicKey) : null);
     }
 
     public async Task<string> Decrypt(string symKey, string encoded)
     {
         var chacha = new ChaCha20Poly1305Aead();
-        var secretKey = ByteArrayFromHexString(symKey);
+        var secretKey = Utils.ByteArrayFromHexString(symKey);
         var encodedData = Deserialize(encoded);
         var b = new SecretBox(encodedData.Sealed, secretKey, encodedData.IvSealed, 0);
 
@@ -177,19 +160,4 @@ using System.Text;
     {
         return result.Type == EncodeOptions.TYPE_1 && result.SenderPublicKey != null && result.ReceiverPublicKey != null;
     }
-
-    private byte[] ByteArrayFromHexString(string hexString)
-    {
-        if (hexString.Length % 2 != 0)
-        {
-            throw new ArgumentException("La cadena hex debe tener una longitud par.");
-        }
-        var result = new byte[hexString.Length / 2];
-        for (var i = 0; i < result.Length; i++)
-        {
-            result[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-        }
-        return result;
-    }
-}
-*/
+} */

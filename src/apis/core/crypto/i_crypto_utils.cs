@@ -3,7 +3,7 @@ public interface ICryptoUtils
     CryptoKeyPair GenerateKeyPair();
     byte[] RandomBytes(int length);
     string GenerateRandomBytes32();
-    Task<string> DeriveSymKey(string privKeyA, string pubKeyB);
+    string DeriveSymKey(string privKeyA, string pubKeyB);
     string HashKey(string key);
     string HashMessage(string message);
     Task<string> Encrypt(
