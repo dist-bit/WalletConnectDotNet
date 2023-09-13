@@ -62,16 +62,16 @@ using System.Text.Json;
         _checkInitialized();
 
         var privKey = _getPrivateKey(selfPublicKey);
-        var symKey = await _utils.DeriveSymKey(privKey, peerPublicKey);
-        return await SetSymKey(symKey, overrideTopic);
+        var symKey = _utils.DeriveSymKey(privKey, peerPublicKey);
+        return SetSymKey(symKey, overrideTopic);
     }
 
-    public async Task<string> SetSymKey(string symKey, string overrideTopic = null)
+    public string SetSymKey(string symKey, string overrideTopic = null)
     {
         _checkInitialized();
 
         var topic = overrideTopic ?? _utils.HashKey(symKey);
-        await KeyChain.Set(topic, symKey);
+        KeyChain.Set(topic, symKey);
         return topic;
     }
 

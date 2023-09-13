@@ -32,10 +32,12 @@ namespace Example
             var wind = new Wind("ENE", 27);
             var curve = new Curve();
 
+            
+
             windChanged.Subscribe(handler => Console.WriteLine("event"));
 
 
-            var aliceKeyPair = curve.GenerateKeyPair();
+        /*    var aliceKeyPair = curve.GenerateKeyPair();
 
             var bobKeyPair = curve.GenerateKeyPair();
 
@@ -81,7 +83,53 @@ namespace Example
             Console.WriteLine(enc);
 
             var dec = cryptoUtil.Decrypt(hash, enc);
-            Console.WriteLine(dec);
+            Console.WriteLine(dec); */
+
+
+
+            IGenericStore<Wind> genericStore = new GenericStore<Wind>("myContext", "1.0.0" );
+
+            
+
+            genericStore.OnCreate.Subscribe((e) =>
+            {
+                Console.WriteLine("Create: " + e.Value);
+            });
+
+
+            genericStore.OnUpdate.Subscribe((e) => 
+            {
+                Console.WriteLine("Update: " + e);
+            });
+
+    
+            genericStore.OnDelete.Subscribe((e) =>
+            {
+                Console.WriteLine("Delete: " + e);
+            });
+
+  
+            genericStore.OnSync.Subscribe((e) =>
+            {
+               Console.WriteLine("Sync: " + e);
+            });
+
+            // Inicializando tu GenericStore
+            genericStore.Init();
+
+            // Probando la función Set y Get
+            genericStore.Set("testKey", new Wind("dd", 234));
+            var value = genericStore.Get("testKey");
+            Console.WriteLine("Got value: " + value.Strength);
+
+            // Probando la función GetAll
+            var allValues = genericStore.GetAll();
+            Console.WriteLine("all value: " + value.Direction);
+
+            // Probando la función DeleteAsync
+            genericStore.Delete("testKey");
+            value = genericStore.Get("testKey");
+            Console.WriteLine("after delete: " + value);
         }
 
     }

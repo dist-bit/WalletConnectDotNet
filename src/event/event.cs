@@ -39,7 +39,7 @@ public class Event<T> where T : EventArgs
         get { return _handlers.Count; }
     }
 
-    public void Broadcast(T? args)
+    public void Broadcast(T args)
     {
         foreach (var handler in _handlers)
         {
