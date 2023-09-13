@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-public class WalletConnectError
+public class WalletConnectError : Exception
 {
     public int Code { get; }
     public string Message { get; }
@@ -12,6 +12,13 @@ public class WalletConnectError
         Message = message;
         Data = data;
     }
+
+    public WalletConnectError(int code, string message)
+    {
+        Code = code;
+        Message = message;
+    }
+
 
     public static WalletConnectError FromJson(Dictionary<string, dynamic> json)
     {

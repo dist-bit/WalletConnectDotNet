@@ -1,6 +1,4 @@
-using System.Text;
-
-/*public class CryptoUtils : ICryptoUtils
+public class CryptoUtils : ICryptoUtils
 {
     private static readonly Random _random = new Random();
     Curve curve = new Curve();
@@ -47,25 +45,15 @@ using System.Text;
 
     public string HashKey(string key)
     {
-        var sha256 = new Sha256Digest();
-        var input = Encoding.UTF8.GetBytes(key);
-        var output = new byte[sha256.GetDigestSize()];
-        sha256.BlockUpdate(input, 0, input.Length);
-        sha256.DoFinal(output, 0);
-        return BitConverter.ToString(output).Replace("-", "");
+        return Utils.CalculateSHA256Hash(key);
     }
 
     public string HashMessage(string message)
     {
-        var sha256 = new Sha256Digest();
-        var input = Encoding.UTF8.GetBytes(message);
-        var output = new byte[sha256.GetDigestSize()];
-        sha256.BlockUpdate(input, 0, input.Length);
-        sha256.DoFinal(output, 0);
-        return BitConverter.ToString(output).Replace("-", "");
+        return Utils.CalculateSHA256Hash(message);
     }
 
-    public async Task<string> Encrypt(string message, string symKey, int? type = null, string iv = null, string senderPublicKey = null)
+    public string Encrypt(string message, string symKey, int? type = null, string iv = null, string senderPublicKey = null)
     {
         var decodedType = type ?? EncodeOptions.TYPE_0;
 
@@ -75,21 +63,16 @@ using System.Text;
         }
 
         var usedIV = iv != null ? Utils.ByteArrayFromHexString(iv) : RandomBytes(IV_LENGTH);
-
-        var chacha = new ChaCha20Poly1305Aead();
-        var b = chacha.Encrypt(Encoding.UTF8.GetBytes(message), Utils.ByteArrayFromHexString(symKey), usedIV);
+        var b = Utils.ChaCha20Poly1305EncryptMessage(Utils.ByteArrayFromHexString(symKey), usedIV, message);
 
         return Serialize(decodedType, b, usedIV, senderPublicKey != null ? Utils.ByteArrayFromHexString(senderPublicKey) : null);
     }
 
-    public async Task<string> Decrypt(string symKey, string encoded)
+    public string Decrypt(string symKey, string encoded)
     {
-        var chacha = new ChaCha20Poly1305Aead();
         var secretKey = Utils.ByteArrayFromHexString(symKey);
         var encodedData = Deserialize(encoded);
-        var b = new SecretBox(encodedData.Sealed, secretKey, encodedData.IvSealed, 0);
-
-        return Encoding.UTF8.GetString(chacha.Decrypt(b, secretKey));
+        return Utils.ChaCha20Poly1305DecryptMessage(secretKey, encodedData.Sealed);
     }
 
     public string Serialize(int type, byte[] sealedBytes, byte[] iv, byte[] senderPublicKey = null)
@@ -160,4 +143,4 @@ using System.Text;
     {
         return result.Type == EncodeOptions.TYPE_1 && result.SenderPublicKey != null && result.ReceiverPublicKey != null;
     }
-} */
+}
