@@ -46,7 +46,7 @@ public class Utils
             byte[] decryptedMessage = new byte[extractedCiphertext.Length];
 
             chacha.Decrypt(extractedNonce, extractedCiphertext, extractedTag, decryptedMessage, new byte[0]);
-            return Encoding.UTF8.GetString(decryptedMessage).Replace(" ", "");
+            return Encoding.UTF8.GetString(decryptedMessage);
         }
     }
 
