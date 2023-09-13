@@ -2,17 +2,17 @@ using Newtonsoft.Json;
 
 public class GenericStore<T> : IGenericStore<T>
 {
-    public string Context { get; }
-    public string Version { get; }
+    public override string Context { get; }
+    public override string Version { get; }
 
-    public string StorageKey => $"{Version}//{Context}";
+    public override string StorageKey => $"{Version}//{Context}";
 
-    public Func<dynamic, object> FromJson => throw new NotImplementedException();
+    //public override Func<dynamic, object> FromJson => throw new NotImplementedException();
 
-    public Event<StoreCreateEvent<object>> OnCreate { get; }
-    public Event<StoreUpdateEvent<object>> OnUpdate { get; }
-    public Event<StoreDeleteEvent<object>> OnDelete { get; }
-    public Event<StoreSyncEvent> OnSync { get; }
+    public override Event<StoreCreateEvent<object>> OnCreate { get; }
+    public override Event<StoreUpdateEvent<object>> OnUpdate { get; }
+    public override Event<StoreDeleteEvent<object>> OnDelete { get; }
+    public override Event<StoreSyncEvent> OnSync { get; }
 
 
     private bool _initialized = false;
@@ -34,7 +34,7 @@ public class GenericStore<T> : IGenericStore<T>
         OnSync = new Event<StoreSyncEvent>();
     }
 
-    public void Init()
+    public override void Init()
     {
         if (_initialized)
         {
@@ -46,13 +46,13 @@ public class GenericStore<T> : IGenericStore<T>
         Restore();
     }
 
-    public bool Has(string key)
+    public override bool Has(string key)
     {
         CheckInitialized();
         return data.ContainsKey(key);
     }
 
-    public T? Get(string key)
+    public override T? Get(string key)
     {
         CheckInitialized();
 
@@ -63,12 +63,12 @@ public class GenericStore<T> : IGenericStore<T>
         return default;
     }
 
-    public List<object> GetAll()
+    public override List<object> GetAll()
     {
         return new List<object>(data.Values);
     }
 
-    public void Set(string key, object value)
+    public override void Set(string key, object value)
     {
         CheckInitialized();
 
@@ -86,7 +86,7 @@ public class GenericStore<T> : IGenericStore<T>
         //OnSync.Broadcast(new StoreSyncEvent());
     }
 
-    public void Delete(string key)
+    public override void Delete(string key)
     {
         CheckInitialized();
 
@@ -99,7 +99,7 @@ public class GenericStore<T> : IGenericStore<T>
         data.Remove(key);
     }
 
-    public void Restore()
+    public override void Restore()
     {
 
         if (!Has(Context))
@@ -128,7 +128,7 @@ public class GenericStore<T> : IGenericStore<T>
         }
     }
 
-    protected void CheckInitialized()
+    public override void CheckInitialized()
     {
         if (!_initialized)
         {

@@ -1,4 +1,4 @@
-public interface IGenericStore<T>
+public abstract class IGenericStore<T>
 {
     public abstract string Version { get; }
     public abstract string Context { get; }
@@ -20,4 +20,6 @@ public interface IGenericStore<T>
     public abstract List<object> GetAll();
     public abstract void Delete(string key);
     public abstract void Restore();
+
+    public abstract void CheckInitialized();
 }
