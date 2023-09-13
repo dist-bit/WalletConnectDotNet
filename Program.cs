@@ -70,11 +70,18 @@ namespace Example
             // Console.WriteLine(key);
             List<byte> iv = new List<byte> { 72, 110, 71, 192, 86, 158, 19, 153, 184, 233, 201, 96 };
 
-            Console.WriteLine("Hola mundo");
-            var encrypt = Utils.ChaCha20Poly1305EncryptMessage(sk1, iv.ToArray(), "Hola mundo");
+            var message = "Hola mundo";
+            var encrypt = Utils.ChaCha20Poly1305EncryptMessage(sk1, iv.ToArray(), message);
             Utils.PrintList(encrypt);
             var decrypt = Utils.ChaCha20Poly1305DecryptMessage(sk1, encrypt);
             Console.WriteLine(decrypt);
+
+            var cryptoUtil = new CryptoUtils();
+            var enc = cryptoUtil.Encrypt(message, hash);
+            Console.WriteLine(enc);
+
+            var dec = cryptoUtil.Decrypt(hash, enc);
+            Console.WriteLine(dec);
         }
 
     }
