@@ -2,23 +2,9 @@ using Newtonsoft.Json;
 
 public class WalletConnectError : Exception
 {
-    public int Code { get; }
-    public string Message { get; }
-    public string? Data { get; }
-
-    public WalletConnectError(int code, string message, string? data)
-    {
-        Code = code;
-        Message = message;
-        Data = data;
-    }
-
-    public WalletConnectError(int code, string message)
-    {
-        Code = code;
-        Message = message;
-    }
-
+    public int Code { get; set; }
+    public string Message { get; set; }
+    public string? Data { get; set; }
 
     public static WalletConnectError FromJson(Dictionary<string, dynamic> json)
     {
@@ -26,22 +12,19 @@ public class WalletConnectError : Exception
         string message = json["message"];
         string? data = json.ContainsKey("data") ? json["data"] : null;
 
-        return new WalletConnectError(code, message, data);
+        return new WalletConnectError  {
+            Code = code, Message = message, Data = data
+        };
     }
 }
 
 public class RpcOptions
 {
-    public int Ttl { get; }
-    public bool Prompt { get; }
-    public int Tag { get; }
+    public int Ttl { get; set; }
+    public bool Prompt { get; set; }
+    public int Tag { get; set; }
 
-    public RpcOptions(int ttl, bool prompt, int tag)
-    {
-        Ttl = ttl;
-        Prompt = prompt;
-        Tag = tag;
-    }
+ 
 }
 
 public class ConnectionMetadata

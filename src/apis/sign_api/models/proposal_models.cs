@@ -2,15 +2,15 @@ using Newtonsoft.Json;
 
 public class RequiredNamespace
 {
-    public List<string>? chains { get; set; }
-    public List<string> methods { get; set; }
-    public List<string> events { get; set; }
+    public List<string>? Chains { get; set; }
+    public List<string> Methods { get; set; }
+    public List<string> Events { get; set; }
 
-    public RequiredNamespace(List<string>? chains, List<string> methods, List<string> events)
+    public RequiredNamespace(List<string>? Chains, List<string> Methods, List<string> Events)
     {
-        this.chains = chains;
-        this.methods = methods;
-        this.events = events;
+        this.Chains = Chains;
+        this.Methods = Methods;
+        this.Events = Events;
     }
 
     public static RequiredNamespace FromJson(Dictionary<string, dynamic> json)

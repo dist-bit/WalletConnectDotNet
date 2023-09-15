@@ -8,6 +8,12 @@ public class Relay
     [JsonProperty("data")]
     public string? Data { get; set; }
 
+     public Relay(string protocol, string? data)
+    {
+        Protocol = protocol;
+        Data = data;
+    }
+
     public static Relay? FromJson(string json)
     {
         return JsonConvert.DeserializeObject<Relay>(json);
