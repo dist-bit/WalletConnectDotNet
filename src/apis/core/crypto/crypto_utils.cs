@@ -53,13 +53,17 @@ public class CryptoUtils : ICryptoUtils
         return Utils.CalculateSHA256Hash(message);
     }
 
-    public string Encrypt(string message, string symKey, int? type = null, string iv = null, string senderPublicKey = null)
+    public string Encrypt(string message, string symKey, int? type = null, string? iv = null, string? senderPublicKey = null)
     {
         var decodedType = type ?? EncodeOptions.TYPE_0;
 
         if (decodedType == EncodeOptions.TYPE_1 && senderPublicKey == null)
         {
-            throw new WalletConnectError(-1, "Missing sender public key for type 1 envelope");
+            throw new WalletConnectError
+            {
+                Code = -1,
+                Message = "Missing sender public key for type 1 envelope"
+            };
         }
 
         var usedIV = iv != null ? Utils.ByteArrayFromHexString(iv) : RandomBytes(IV_LENGTH);
@@ -75,7 +79,7 @@ public class CryptoUtils : ICryptoUtils
         return Utils.ChaCha20Poly1305DecryptMessage(secretKey, encodedData.Sealed);
     }
 
-    public string Serialize(int type, byte[] sealedBytes, byte[] iv, byte[] senderPublicKey = null)
+    public string Serialize(int type, byte[] sealedBytes, byte[] iv, byte[]? senderPublicKey = null)
     {
         var list = new List<byte> { (byte)type };
 
@@ -83,7 +87,9 @@ public class CryptoUtils : ICryptoUtils
         {
             if (senderPublicKey == null)
             {
-                throw new WalletConnectError(-1, "Missing sender public key for type 1 envelope");
+                throw new WalletConnectError {
+                    Code = -1, Message = "Missing sender public key for type 1 envelope"
+                };
             }
 
             list.AddRange(senderPublicKey);
@@ -129,11 +135,15 @@ public class CryptoUtils : ICryptoUtils
         {
             if (senderPublicKey == null)
             {
-                throw new WalletConnectError(-1, "Missing sender public key");
+                throw new WalletConnectError {
+                    Code =-1, Message = "Missing sender public key"
+                };
             }
             if (receiverPublicKey == null)
             {
-                throw new WalletConnectError(-1, "Missing receiver public key");
+                throw new WalletConnectError {
+                    Code = -1, Message = "Missing receiver public key"
+                };
             }
         }
         return new EncodingValidation(t, senderPublicKey, receiverPublicKey);
